@@ -486,6 +486,7 @@
       frame = 0
 
       debug = false
+      running = false
 
       windowWidth = 0
       windowHeight = 0
@@ -497,12 +498,21 @@
 
       init = () => {
         this.findAndAddElements()
+        this.start()
+      }
 
+      start = () => {
+        this.running = true
         window.requestAnimationFrame(this.onAnimationFrame)
         this.windowWidth = document.body.clientWidth
         this.windowHeight = document.body.clientHeight
 
-        window.onresize = this.onWindowResize
+        window.addEventListener('resize', this.onWindowResize)
+      }
+
+      stop = () => {
+        this.running = false
+        window.removeEventListener('resize', this.onWindowResize)
       }
 
       onWindowResize = () => {
@@ -543,7 +553,7 @@
 
         this.frame++
 
-        window.requestAnimationFrame(this.onAnimationFrame)
+        this.running && window.requestAnimationFrame(this.onAnimationFrame)
       }
 
       addDriver = (name, getValueFn, options = {}) => {
